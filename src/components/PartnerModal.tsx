@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Wrench, LogIn, UserPlus, Eye, EyeOff, Loader2, CheckCircle2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { mechanicService, type AddMechanicPayload } from '@/services/api';
 
 interface PartnerModalProps {
@@ -11,6 +12,7 @@ interface PartnerModalProps {
 const SERVICE_TYPES = ['General', 'Tyre', 'Battery', 'Engine', 'Towing', 'Electrician', 'AC Repair'];
 
 export default function PartnerModal({ onClose }: PartnerModalProps) {
+  const navigate = useNavigate();
   const [tab, setTab] = useState<'login' | 'register'>('login');
   const [showPwd, setShowPwd] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -53,7 +55,11 @@ export default function PartnerModal({ onClose }: PartnerModalProps) {
     await new Promise((r) => setTimeout(r, 1200));
     setLoading(false);
     setSuccess(true);
-    setTimeout(() => { setSuccess(false); onClose(); }, 1800);
+    setTimeout(() => { 
+      setSuccess(false); 
+      onClose();
+      navigate('/mechanic');
+    }, 1800);
   };
 
   const modal = (

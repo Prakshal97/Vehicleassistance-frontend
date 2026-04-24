@@ -28,6 +28,25 @@ export interface AddMechanicPayload {
   };
 }
 
+export interface BreakdownRequest {
+  id: string;
+  userId: string;
+  mechanicId: string;
+  vehicleType: string;
+  problemDescription: string;
+  latitude: number;
+  longitude: number;
+  status: 'PENDING' | 'ACCEPTED' | 'COMPLETED' | 'REJECTED';
+}
+
+export interface CreateRequestPayload {
+  mechanicId: string;
+  vehicleType: string;
+  problemDescription: string;
+  latitude: number;
+  longitude: number;
+}
+
 /* ✅ AXIOS INSTANCE */
 
 const isLocal = window.location.hostname === 'localhost';
@@ -72,6 +91,23 @@ export const mechanicService = {
 
   approveMechanic: async (id: string): Promise<Mechanic> => {
     const res = await api.post(`/mechanics/${id}/approve`);
+    return res.data;
+  },
+};
+
+export const breakdownService = {
+  createRequest: async (data: CreateRequestPayload): Promise<BreakdownRequest> => {
+    const res = await api.post('/breakdown/request', data);
+    return res.data;
+  },
+
+  getMechanicRequests: async (mechanicId: string): Promise<BreakdownRequest[]> => {
+    const res = await api.get(`/breakdown/mechanic/${mechanicId}`);
+    return res.data;
+  },
+
+  updateRequestStatus: async (requestId: string, status: string): Promise<BreakdownRequest> => {
+    const res = await api.put(`/breakdown/${requestId}/status?status=${status}`);
     return res.data;
   },
 };

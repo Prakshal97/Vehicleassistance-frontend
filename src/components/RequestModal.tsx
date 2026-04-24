@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Wrench, Clock, Phone, Star, MapPin, CheckCircle2, Loader2, MessageCircle } from 'lucide-react';
-import type { Mechanic } from '@/services/api';
+import { breakdownService, type Mechanic } from '@/services/api';
 
 interface RequestModalProps {
   mechanic: (Mechanic & { rating?: number; reviews?: number; distance?: string; eta?: string; available?: boolean }) | null;
@@ -14,10 +14,25 @@ export default function RequestModal({ mechanic, onClose }: RequestModalProps) {
   const [issue, setIssue] = useState('');
 
   const handleConfirm = async () => {
-    if (stage !== 'confirm') return;
+    if (stage !== 'confirm' || !mechanic) return;
     setStage('sending');
-    await new Promise((r) => setTimeout(r, 1600));
-    setStage('confirmed');
+    try {
+      // Use geolocation if available, else default to Mumbai coords
+      const lat = (window as any).lastLat || 19.076;
+      const lng = (window as any).lastLng || 72.877;
+      
+      await breakdownService.createRequest({
+        mechanicId: mechanic.id,
+        vehicleType: 'Car', // Default for now
+        problemDescription: issue || 'General assistance needed',
+        latitude: lat,
+        longitude: lng,
+      });
+      setStage('confirmed');
+    } catch (error) {
+      alert('Failed to send request. Please try again.');
+      setStage('confirm');
+    }
   };
 
   const handleClose = () => {
