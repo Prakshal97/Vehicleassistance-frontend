@@ -30,8 +30,11 @@ export interface AddMechanicPayload {
 
 /* ✅ AXIOS INSTANCE */
 
+const isLocal = window.location.hostname === 'localhost';
 const api = axios.create({
-  baseURL: 'https://vehicle-assistance-backend-1.onrender.com',
+  baseURL: isLocal 
+    ? 'http://localhost:8081' 
+    : 'https://vehicle-assistance-backend-1.onrender.com',
   headers: { 'Content-Type': 'application/json' },
 });
 
