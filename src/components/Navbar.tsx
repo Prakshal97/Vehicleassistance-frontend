@@ -40,6 +40,9 @@ export default function Navbar() {
           <Link to="/find" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
             Find Help
           </Link>
+          <Link to="/admin" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+            Admin
+          </Link>
           <button
             onClick={toggleDark}
             className="w-9 h-9 rounded-lg border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-all"
@@ -75,6 +78,9 @@ export default function Navbar() {
           <div className="absolute top-16 left-0 right-0 glass-surface border-b border-border p-4 flex flex-col gap-3 md:hidden z-40">
             <Link to="/find" onClick={() => setOpen(false)} className="text-sm font-medium text-muted-foreground hover:text-primary py-2">
               Find Help
+            </Link>
+            <Link to="/admin" onClick={() => setOpen(false)} className="text-sm font-medium text-muted-foreground hover:text-primary py-2">
+              Admin
             </Link>
             <button
               onClick={() => { setOpen(false); setShowPartner(true); }}

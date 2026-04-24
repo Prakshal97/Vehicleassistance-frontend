@@ -98,7 +98,7 @@ export default function FindMechanics() {
   const fetchNearby = async () => {
     setLoading(true);
     try {
-      const data = await mechanicService.getAll();
+      const data = await mechanicService.getApproved();
       const enriched = enrich(data);
       setMechanics(enriched);
       setFiltered(enriched);

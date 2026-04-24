@@ -13,6 +13,7 @@ export interface Mechanic {
   phone: string;
   location: MechanicLocation;
   serviceType: string;
+  approved: boolean;
   lat?: number;
   lng?: number;
 }
@@ -47,6 +48,11 @@ export const mechanicService = {
     return res.data;
   },
 
+  getApproved: async (): Promise<Mechanic[]> => {
+    const res = await api.get('/mechanics/approved');
+    return res.data;
+  },
+
   addMechanic: async (data: AddMechanicPayload): Promise<Mechanic> => {
     const res = await api.post('/mechanics/add', data);
     return res.data;
@@ -59,5 +65,10 @@ export const mechanicService = {
 
   deleteMechanic: async (id: string): Promise<void> => {
     await api.delete(`/mechanics/${id}`);
+  },
+
+  approveMechanic: async (id: string): Promise<Mechanic> => {
+    const res = await api.post(`/mechanics/${id}/approve`);
+    return res.data;
   },
 };

@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Navbar from "@/components/Navbar";
 import Landing from "@/pages/Landing";
 import FindMechanics from "@/pages/FindMechanics";
+import AdminPortal from "@/pages/AdminPortal";
 import NotFound from "@/pages/NotFound";
 import AIChatbot from "@/components/AIChatbot";
 
@@ -21,6 +22,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/find" element={<FindMechanics />} />
+          <Route path="/admin" element={<AdminPortal />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <AIChatbot />
