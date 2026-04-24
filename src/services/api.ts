@@ -51,4 +51,13 @@ export const mechanicService = {
     const res = await api.post('/mechanics/add', data);
     return res.data;
   },
+
+  updateMechanic: async (id: string, data: Partial<Mechanic>): Promise<Mechanic> => {
+    const res = await api.put(`/mechanics/${id}`, data);
+    return res.data;
+  },
+
+  deleteMechanic: async (id: string): Promise<void> => {
+    await api.delete(`/mechanics/${id}`);
+  },
 };

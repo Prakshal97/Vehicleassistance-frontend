@@ -2,11 +2,12 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Phone, Wrench, MapPin, MessageCircle, Star, Mic, MicOff,
-  Search, Loader2, Wifi, RefreshCw, Navigation2
+  Search, Loader2, Wifi, RefreshCw, Navigation2, Pencil, Trash2
 } from 'lucide-react';
 import { mechanicService, type Mechanic } from '@/services/api';
 import MapView from '@/components/MapView';
 import RequestModal from '@/components/RequestModal';
+import UpdateMechanicModal from '@/components/UpdateMechanicModal';
 import SOSButton from '@/components/SOSButton';
 
 // Augment Mechanic locally with display fields
@@ -68,6 +69,7 @@ export default function FindMechanics() {
   const [filtered, setFiltered] = useState<MechanicDisplay[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedMechanic, setSelectedMechanic] = useState<MechanicDisplay | null>(null);
+  const [editingMechanic, setEditingMechanic] = useState<MechanicDisplay | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
   const [activeFilter, setActiveFilter] = useState('All');
@@ -148,6 +150,22 @@ export default function FindMechanics() {
   const stopVoice = () => {
     recognitionRef.current?.stop();
     setListening(false);
+  };
+
+  const handleDelete = async (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    if (!window.confirm('Are you sure you want to delete this mechanic?')) return;
+    try {
+      await mechanicService.deleteMechanic(id);
+      fetchNearby();
+    } catch {
+      alert('Delete failed.');
+    }
+  };
+
+  const handleEdit = (e: React.MouseEvent, mechanic: MechanicDisplay) => {
+    e.stopPropagation();
+    setEditingMechanic(mechanic);
   };
 
   return (
@@ -307,9 +325,27 @@ export default function FindMechanics() {
                       </div>
                     </div>
                   </div>
-                  <div className="text-right text-xs text-muted-foreground">
-                    <p className="font-semibold text-foreground">{m.distance}</p>
-                    <p>~{m.eta}</p>
+                  <div className="text-right text-xs text-muted-foreground flex flex-col items-end gap-1.5">
+                    <div className="flex gap-1">
+                      <button
+                        onClick={(e) => handleEdit(e, m)}
+                        className="p-1.5 rounded-lg hover:bg-blue-500/10 text-blue-500 transition-colors"
+                        title="Edit Mechanic"
+                      >
+                        <Pencil size={13} />
+                      </button>
+                      <button
+                        onClick={(e) => handleDelete(e, m.id)}
+                        className="p-1.5 rounded-lg hover:bg-red-500/10 text-red-500 transition-colors"
+                        title="Delete Mechanic"
+                      >
+                        <Trash2 size={13} />
+                      </button>
+                    </div>
+                    <div className="flex flex-col items-end">
+                      <p className="font-semibold text-foreground">{m.distance}</p>
+                      <p>~{m.eta}</p>
+                    </div>
                   </div>
                 </div>
 
@@ -395,6 +431,12 @@ export default function FindMechanics() {
       <RequestModal
         mechanic={selectedMechanic}
         onClose={() => setSelectedMechanic(null)}
+      />
+
+      <UpdateMechanicModal
+        mechanic={editingMechanic}
+        onClose={() => setEditingMechanic(null)}
+        onUpdate={fetchNearby}
       />
     </div>
   );
