@@ -7,6 +7,7 @@ import Navbar from "@/components/Navbar";
 import Landing from "@/pages/Landing";
 import FindMechanics from "@/pages/FindMechanics";
 import NotFound from "@/pages/NotFound";
+import AIChatbot from "@/components/AIChatbot";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/find" element={<FindMechanics />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <AIChatbot />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

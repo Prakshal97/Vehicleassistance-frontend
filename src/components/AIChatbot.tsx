@@ -44,24 +44,28 @@ export default function AIChatbot() {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    console.log("Velocity AI Chatbot Mounted");
+  }, []);
+
+  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, typing]);
 
   const send = async (text: string) => {
-    if (!text.trim()) return;
-    setMessages((m) => [...m, { role: 'user', text }]);
+    const trimmed = text.trim();
+    if (!trimmed) return;
+    setMessages((m) => [...m, { role: 'user', text: trimmed }]);
     setInput('');
     setTyping(true);
     await new Promise((r) => setTimeout(r, 900 + Math.random() * 500));
     setTyping(false);
-    setMessages((m) => [...m, { role: 'bot', text: getResponse(text) }]);
+    setMessages((m) => [...m, { role: 'bot', text: getResponse(trimmed) }]);
   };
 
   const panel = (
     <div
-      className="fixed bottom-24 right-6 w-[340px] max-h-[520px] rounded-3xl overflow-hidden flex flex-col"
+      className="w-full h-full sm:w-[340px] sm:max-h-[520px] rounded-3xl overflow-hidden flex flex-col"
       style={{
-        zIndex: 99998,
         background: 'hsl(var(--card))',
         boxShadow: '0 32px 80px rgba(0,0,0,0.3), 0 0 0 1px hsl(var(--border)/0.5)',
       }}
@@ -217,20 +221,26 @@ export default function AIChatbot() {
       </motion.button>
 
       {/* Chat panel */}
-      <AnimatePresence>
-        {open && createPortal(
-          <motion.div
-            key="chatpanel"
-            initial={{ opacity: 0, y: 16, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 16, scale: 0.95 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-          >
-            {panel}
-          </motion.div>,
-          document.body
-        )}
-      </AnimatePresence>
+      {createPortal(
+        <AnimatePresence>
+          {open && (
+            <motion.div
+              key="chatpanel"
+              initial={{ opacity: 0, y: 16, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 16, scale: 0.95 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+              className="fixed inset-0 pointer-events-none"
+              style={{ zIndex: 99998 }}
+            >
+              <div className="pointer-events-auto absolute inset-0 sm:inset-auto sm:bottom-24 sm:right-6">
+                {panel}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>,
+        document.body
+      )}
     </>
   );
 }

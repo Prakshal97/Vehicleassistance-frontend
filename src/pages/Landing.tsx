@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { Zap, Shield, Clock, ArrowRight, Star, MapPin, Phone, Wrench, CheckCircle, TrendingUp, Users, Award } from 'lucide-react';
 import Footer from '@/components/Footer';
-import AIChatbot from '@/components/AIChatbot';
 import { useRef } from 'react';
 
 const features = [
@@ -338,7 +337,6 @@ export default function Landing() {
       </section>
 
       <Footer />
-      <AIChatbot />
     </div>
   );
 }
